@@ -8,30 +8,31 @@ import org.springframework.stereotype.Service;
 
 import com.claudio.course.entities.User;
 import com.claudio.course.repositories.UserRepository;
+import com.claudio.course.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class UserService {
-	
+
 	@Autowired
 	private UserRepository repository;
-	
-	public List<User> findAll(){
+
+	public List<User> findAll() {
 		return repository.findAll();
 	}
-	
+
 	public User findById(Long id) {
 		Optional<User> obj = repository.findById(id);
-		return obj.get();
+		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
 	public User insert(User obj) {
 		return repository.save(obj);
 	}
-	
+
 	public void delete(Long id) {
 		repository.deleteById(id);
 	}
-	
+
 	public User update(Long id, User obj) {
 		User entity = repository.getOne(id);
 		updateData(entity, obj);
